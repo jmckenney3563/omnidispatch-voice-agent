@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  omnidispatch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: omnidispatch-voice-agent
+    ports:
+      - "8000:8000"
+    environment:
+      - ASSEMBLYAI_API_KEY=${ASSEMBLYAI_API_KEY:-}
+      - HOST=0.0.0.0
+      - PORT=8000
+      - AUDIO_SAMPLE_RATE=16000
+      - VAD_SILENCE_THRESHOLD_MS=750
+      - AUTO_TOOL_EXECUTION=true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
